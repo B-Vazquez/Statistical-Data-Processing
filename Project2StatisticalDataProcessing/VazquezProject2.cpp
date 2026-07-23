@@ -4,6 +4,7 @@
 #include <fstream>
 #include <iomanip>
 #include <cmath>
+#include <stdexcept>
 
 using namespace std;
 
@@ -13,6 +14,7 @@ double stdDev(const Dynamic_Array&); // Calculates the standard deviation of all
 double corrCoef(const Dynamic_Array&, const Dynamic_Array&); // Calculates the correlation coefficient of all values stored in the given dynamic arrays
 double slope(const Dynamic_Array&, const Dynamic_Array&); // Calculates the slope of all values stored in the given dynamic arrays
 double intercept(const Dynamic_Array&, const Dynamic_Array&); // Calculates the intercept of all values stored in the given dynamic arrays
+void passAndValidateData(ifstream&, Dynamic_Array&, Dynamic_Array&); // Passes and validates all data from the input file to each dynamic array.
 
 int main(int argc, char * argv[]) {
 	// Opens the input file.
@@ -22,7 +24,6 @@ int main(int argc, char * argv[]) {
 	if (!inputFile) {
 		cout << argv[0] << endl;
 		cout << "Error: input file does not exist. Please encure the input file is stored in the above directory." << endl;
-		system("pause");
 		return -1;
 	}
 
@@ -31,13 +32,15 @@ int main(int argc, char * argv[]) {
 
 	Dynamic_Array xArray; // Dynamic array to store the values of the given X's
 	Dynamic_Array yArray; // Dynamic array to store the values of the given Y's
-	double xToPass; // Temporarily stores the current x to pass into xArray
-	double yToPass; // Temporarily stores the current y to pass into yArray
 
-	// Loop to pass all x and y values to their given array
-	while (inputFile >> xToPass >> yToPass) {
-		xArray.push_back(xToPass);
-		yArray.push_back(yToPass);
+	try {
+		// Loop to pass all x and y values to their given array
+		passAndValidateData(inputFile, xArray, yArray);
+	} catch (const runtime_error& e) {
+		outputFile << e.what() << endl;
+		inputFile.close();
+		outputFile.close();
+		return -1;
 	}
 
 	// Writes num the number of x-y pairs to the output file
@@ -148,4 +151,34 @@ double intercept(const Dynamic_Array& xArray, const Dynamic_Array& yArray) {
 		sumOfY += yArray[i];
 	}
 	return (sumOfY - slope(xArray, yArray) * sumOfX) / xArray.size();
+}
+
+/* Passes and validates all data from the input file to each dynamic array
+	@param inputFile: Given input file
+	@param xArray: Given dynamic array of all X values
+	@param yArray: Given dynamic array of all Y values
+*/
+void passAndValidateData(ifstream& inputFile, Dynamic_Array& xArray, Dynamic_Array& yArray) {
+	double xToPass; // Temporarily stores the current x to pass into xArray
+	double yToPass; // Temporarily stores the current y to pass into yArray
+
+	while (true) {
+		if (!(inputFile >> xToPass)) {
+			if (inputFile.eof()) {
+				break;
+			}
+			throw runtime_error("Invalid input: expected numeric x value in the input file.");
+		}
+
+		if (!(inputFile >> yToPass)) {
+			throw runtime_error("Invalid input: missing y value for the current x value.");
+		}
+
+		xArray.push_back(xToPass);
+		yArray.push_back(yToPass);
+	}
+
+	if (xArray.empty() || yArray.empty()) {
+		throw runtime_error("Invalid input: the input file does not contain any x-y pairs.");
+	}
 }
