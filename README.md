@@ -1,7 +1,36 @@
 # Statistical Data Processing
 
-This is a program that takes in a text file containing any amount of x-y pairs and then provides various information regarding said pairs (result.txt file contains an example of the output info).
+This project reads a text file containing x-y pairs and computes basic statistical information for the two columns of data. The program writes its results to `results.txt`.
 
-An example of a valid input file can be found in the data.txt file. Currently the program expects the input file to be properly formatted, using a file not formatted like the example will cause errors and crashes.
+## What it does
 
-If running the program within VSCode via the .sln, ensure the input file is in the Project2StatisticalDataProcessing folder (initially has a copy of the example input file which can be moved if needed), otherwise the file (or copy) needs to be moved within the directory listed in the error when the code is ran.
+- Reads numeric x-y pairs from `data.txt`
+- Computes the number of pairs read
+- Calculates the arithmetic mean for both columns
+- Computes standard deviation for both columns
+- Calculates the correlation coefficient
+- Produces a simple linear-fitting summary using the slope and intercept
+
+## Build and run
+
+From the workspace root, compile and run the project with your preferred C++ toolchain. In Visual Studio Code, the provided solution can be used to build and run the project.
+
+## Input and output assumptions
+
+- The input file must be named `data.txt`
+- The input file should contain one numeric x value and one numeric y value per line, separated by whitespace
+- The program expects the file to be well-formed; malformed input will currently produce an error message and terminate early
+- The output is written to `results.txt` in the same directory as the executable
+
+## Notable file roles
+
+- `VazquezProject2.cpp`: main program logic and statistical calculations
+- `Dynamic_Array.h`: declaration of the custom dynamic array class
+- `Dynamic_Array.cpp`: dynamic array implementation
+- `data.txt`: sample input data
+- `results.txt`: generated output from a successful run
+
+## Known limitations / requirements
+
+- The program assumes the current working directory contains `data.txt`
+- Input is parsed as plain numeric values; non-numeric or incomplete data will trigger a runtime error

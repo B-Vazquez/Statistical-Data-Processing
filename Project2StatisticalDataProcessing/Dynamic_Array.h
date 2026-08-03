@@ -6,21 +6,21 @@
 class Dynamic_Array {
 public:
 	// Constructors
-	Dynamic_Array(); // Default constructor
-	Dynamic_Array(const Dynamic_Array&); // Copy constructor
+	Dynamic_Array(); // Creates an array with the default starting capacity.
+	Dynamic_Array(const Dynamic_Array&); // Copy constructor.
 
 	// Destructor
 	~Dynamic_Array();
 
 	// Operators
-	const Dynamic_Array& operator = (const Dynamic_Array&); // Assignment operator
-	double& operator [] (size_t); // Subscript operator (lvalue)
-	const double& operator [] (size_t) const; // Subscript operator (rvalue)
+	const Dynamic_Array& operator = (const Dynamic_Array&); // Deep-copy assignment operator.
+	double& operator [] (size_t); // Returns a writable element reference.
+	const double& operator [] (size_t) const; // Returns a read-only element reference.
 
 	// Class-member functions
-	size_t size() const; // Returns the size of the array
-	bool empty() const; // Checks if the array is empty
-	void push_back(double); // Inserts an element at the end of the array
+	size_t size() const; // Returns the number of stored elements.
+	bool empty() const; // Reports whether the array is empty.
+	void push_back(double); // Appends an element to the end of the array.
 	
 private:
 	// Data Fields

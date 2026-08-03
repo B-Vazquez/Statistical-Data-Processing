@@ -20,18 +20,22 @@ int main(int argc, char * argv[]) {
 	// Opens the input file.
 	ifstream inputFile("data.txt");
 
-	// Checks if input file was opened successfully.
+	// Checks whether the input file could be opened successfully.
 	if (!inputFile) {
-		cout << argv[0] << endl;
-		cout << "Error: input file does not exist. Please encure the input file is stored in the above directory." << endl;
+		cerr << argv[0] << endl;
+		cerr << "Error: could not open 'data.txt' in the current working directory." << endl;
 		return -1;
 	}
 
-	// Opens/creates the output file.
+	// Opens or creates the output file used to store the computed statistics.
 	ofstream outputFile("results.txt");
+	if (!outputFile) {
+		cerr << "Error: could not create or open 'results.txt' in the current working directory." << endl;
+		return -1;
+	}
 
-	Dynamic_Array xArray; // Dynamic array to store the values of the given X's
-	Dynamic_Array yArray; // Dynamic array to store the values of the given Y's
+	Dynamic_Array xArray; // Dynamic array to store the X values from the input file
+	Dynamic_Array yArray; // Dynamic array to store the Y values from the input file
 
 	try {
 		// Loop to pass all x and y values to their given array
