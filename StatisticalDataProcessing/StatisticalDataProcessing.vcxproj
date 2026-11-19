@@ -22,7 +22,7 @@
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
     <ProjectGuid>{236ae9ac-ec27-4d96-8948-f194ffbb6395}</ProjectGuid>
-    <RootNamespace>Project2StatisticalDataProcessing</RootNamespace>
+    <RootNamespace>StatisticalDataProcessing</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -131,7 +131,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Dynamic_Array.cpp" />
-    <ClCompile Include="VazquezProject2.cpp" />
+    <ClCompile Include="VazquezStatisticalDataProcessing.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -1,22 +1,25 @@
 #include "Dynamic_Array.h"
 
+#include <stdexcept>
+#include <utility>
+
 // Default capacity
 const size_t Dynamic_Array::DEFAULT_CAPACITY = 10;
 
 // Default constructor
-Dynamic_Array::Dynamic_Array() : capacity(DEFAULT_CAPACITY), num_of_items(0) {
-	data = new double[capacity];
-}
+Dynamic_Array::Dynamic_Array() : capacity(DEFAULT_CAPACITY), num_of_items(0), data(new double[capacity]) {}
 
 // Copy constructor
-Dynamic_Array::Dynamic_Array(const Dynamic_Array& other) {
-	data = NULL;
-	*this = other;
+Dynamic_Array::Dynamic_Array(const Dynamic_Array& other)
+	: capacity(other.capacity), num_of_items(other.num_of_items), data(new double[capacity]) {
+	for (size_t i = 0; i < num_of_items; i++) {
+		data[i] = other.data[i];
+	}
 }
 
 // Destructor
 Dynamic_Array::~Dynamic_Array() {
-	if (data) { delete[] data; }
+	delete[] data;
 }
 
 // Operators
@@ -24,25 +27,10 @@ Dynamic_Array::~Dynamic_Array() {
 // Deep-copy assignment operator. This ensures a new array is allocated
 // and every stored element is copied into the destination object.
 const Dynamic_Array& Dynamic_Array::operator = (const Dynamic_Array& rhs) {
-	// Step 1: Avoid self-assignment
 	if (this != &rhs) {
-		// Step 2: Release dynamic memory before reusing the object.
-		if (data) {
-			delete[] data;
-			data = NULL;
-		}
-		// Step 3: Copy size-related state.
-		capacity = rhs.capacity;
-		num_of_items = rhs.num_of_items;
-		// Step 4: Allocate a new storage block and copy the stored values.
-		if (num_of_items <= capacity) {
-			data = new double[capacity];
-			for (size_t i = 0; i < num_of_items; i++) {
-				data[i] = rhs.data[i];
-			}
-		}
+		Dynamic_Array copy(rhs);
+		swap(copy);
 	}
-	// Step 5: Return the assigned object.
 	return *this;
 }
 
@@ -53,6 +41,22 @@ double& Dynamic_Array::operator [] (size_t index) {
 
 // Subscript value (rvalue)
 const double& Dynamic_Array::operator [] (size_t index) const {
+	return data[index];
+}
+
+// Returns a writable element reference or throws if the index is outside the stored elements.
+double& Dynamic_Array::at(size_t index) {
+	if (index >= num_of_items) {
+		throw std::out_of_range("Dynamic_Array index out of range");
+	}
+	return data[index];
+}
+
+// Returns a read-only element reference or throws if the index is outside the stored elements.
+const double& Dynamic_Array::at(size_t index) const {
+	if (index >= num_of_items) {
+		throw std::out_of_range("Dynamic_Array index out of range");
+	}
 	return data[index];
 }
 
@@ -84,11 +88,20 @@ void Dynamic_Array::push_back(double element) {
 
 // Doubles the underlying storage capacity when the current buffer is full.
 void Dynamic_Array::resize() {
-	capacity *= 2;
-	double* new_data = new double[capacity];
+	const size_t new_capacity = capacity * 2;
+	double* new_data = new double[new_capacity];
 	for (size_t i = 0; i < num_of_items; i++) {
 		new_data[i] = data[i];
 	}
 	delete[] data;
 	data = new_data;
+	capacity = new_capacity;
+}
+
+// Exchanges the buffers and their metadata so copy-and-swap can safely transfer ownership.
+void Dynamic_Array::swap(Dynamic_Array& other) noexcept {
+	using std::swap;
+	swap(capacity, other.capacity);
+	swap(num_of_items, other.num_of_items);
+	swap(data, other.data);
 }

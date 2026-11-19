@@ -1,18 +1,19 @@
 {
-    // Use IntelliSense to learn about possible attributes.
-    // Hover to view descriptions of existing attributes.
-    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
-    "preLaunchTask": "g++.exe build active file",
-    "setupCommands": [
+    "configurations": [
         {
-            "description": "Wipe debuginfod URLs to bypass extension bug",
-            "text": "set debuginfod urls ",
-            "ignoreFailures": true
+            "name": "Debug Statistical Data Processing",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/StatisticalDataProcessing/VazquezStatisticalDataProcessing",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}/StatisticalDataProcessing",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "miDebuggerPath": "/usr/bin/gdb",
+            "preLaunchTask": "build Statistical Data Processing"
         }
-    ],
-    "configurations": [        
-        
-
     ]
 }

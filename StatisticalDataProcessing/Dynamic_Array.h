@@ -1,7 +1,7 @@
 #ifndef DYNAMIC_ARRAY_H
 #define DYNAMIC_ARRAY_H
 
-#include <iostream>
+#include <cstddef>
 
 class Dynamic_Array {
 public:
@@ -16,6 +16,8 @@ public:
 	const Dynamic_Array& operator = (const Dynamic_Array&); // Deep-copy assignment operator.
 	double& operator [] (size_t); // Returns a writable element reference.
 	const double& operator [] (size_t) const; // Returns a read-only element reference.
+	double& at(size_t); // Returns a writable element reference; throws std::out_of_range if index is invalid.
+	const double& at(size_t) const; // Returns a read-only element reference; throws std::out_of_range if index is invalid.
 
 	// Class-member functions
 	size_t size() const; // Returns the number of stored elements.
@@ -31,6 +33,7 @@ private:
 
 	//Class-member functions
 	void resize(); // Doubles the capacity of the array
+	void swap(Dynamic_Array&) noexcept; // Exchanges the storage and size state with another array.
 };
 
 #endif 

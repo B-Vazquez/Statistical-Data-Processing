@@ -13,7 +13,7 @@ double avg(const Dynamic_Array&); // Calculates the average of all values stored
 double stdDev(const Dynamic_Array&); // Calculates the standard deviation of all values stored in a given dynamic array
 double corrCoef(const Dynamic_Array&, const Dynamic_Array&); // Calculates the correlation coefficient of all values stored in the given dynamic arrays
 double slope(const Dynamic_Array&, const Dynamic_Array&); // Calculates the slope of all values stored in the given dynamic arrays
-double intercept(const Dynamic_Array&, const Dynamic_Array&); // Calculates the intercept of all values stored in the given dynamic arrays
+double intercept(const Dynamic_Array&, const Dynamic_Array&, double slope); // Calculates the intercept of all values stored in the given dynamic arrays
 void passAndValidateData(ifstream&, Dynamic_Array&, Dynamic_Array&); // Passes and validates all data from the input file to each dynamic array.
 
 int main(int argc, char * argv[]) {
@@ -22,7 +22,6 @@ int main(int argc, char * argv[]) {
 
 	// Checks whether the input file could be opened successfully.
 	if (!inputFile) {
-		cerr << argv[0] << endl;
 		cerr << "Error: could not open 'data.txt' in the current working directory." << endl;
 		return -1;
 	}
@@ -31,6 +30,7 @@ int main(int argc, char * argv[]) {
 	ofstream outputFile("results.txt");
 	if (!outputFile) {
 		cerr << "Error: could not create or open 'results.txt' in the current working directory." << endl;
+		inputFile.close();
 		return -1;
 	}
 
@@ -41,7 +41,7 @@ int main(int argc, char * argv[]) {
 		// Loop to pass all x and y values to their given array
 		passAndValidateData(inputFile, xArray, yArray);
 	} catch (const runtime_error& e) {
-		outputFile << e.what() << endl;
+		cerr << e.what() << endl;
 		inputFile.close();
 		outputFile.close();
 		return -1;
@@ -63,18 +63,27 @@ int main(int argc, char * argv[]) {
 	// Writes the standard deviation of the y values to the output file
 	outputFile << "Standard deviation of y: " << stdDev(yArray) << endl << endl;
 
-	// Writes the correlation coefficient of the x and y values to the output file
-	outputFile << "Correlation coefficient: " << corrCoef(xArray, yArray) << endl << endl;
+	try {
+		// Writes the correlation coefficient of the x and y values to the output file
+		outputFile << "Correlation coefficient: " << corrCoef(xArray, yArray) << endl << endl;
 
-	// Writes the linear fitting function of the x and y values to output file
-	outputFile << "Linear fitting function:" << endl << endl;
-	outputFile << "y = " << slope(xArray, yArray) << " + " << intercept(xArray, yArray) << endl << endl;
+		// Writes the linear fitting function of the x and y values to output file
+		outputFile << "Linear fitting function:" << endl;
+		double ySlope = slope(xArray, yArray);
+		double yIntercept = intercept(xArray, yArray, ySlope);
+		outputFile << "y = " << ySlope << "x " << (yIntercept >= 0 ? "+ " : "- ") << abs(yIntercept) << endl << endl;
 
-	// Writes the slope of the x and y values to the output file
-	outputFile << "Slope: " << slope(xArray, yArray) << endl;
+		// Writes the slope of the x and y values to the output file
+		outputFile << "Slope: " << ySlope << endl;
 
-	// Writes the intercept of the x and y values to the output file
-	outputFile << "Intercept: " << intercept(xArray, yArray) << endl;
+		// Writes the intercept of the x and y values to the output file
+		outputFile << "Intercept: " << yIntercept << endl;
+	} catch (const runtime_error& e) {
+		cerr << e.what() << endl;
+		inputFile.close();
+		outputFile.close();
+		return -1;
+	}
 	
 
 	// Closes input and output file
@@ -123,6 +132,9 @@ double corrCoef(const Dynamic_Array& xArray, const Dynamic_Array& yArray) {
 		sumOfX += pow(xArray[i] - avgOfX, 2);
 		sumOfY += pow(yArray[i] - avgOfY, 2);
 	}
+	if(sumOfX == 0 || sumOfY == 0) {
+		throw runtime_error("Error: cannot calculate correlation coefficient due to division by zero.");
+	}
 	return sumOfXandY / (sqrt(sumOfX) * sqrt(sumOfY));
 }
 
@@ -140,6 +152,9 @@ double slope(const Dynamic_Array& xArray, const Dynamic_Array& yArray) {
 		sumOfY += yArray[i];
 		sumOfXSquared += pow(xArray[i], 2);
 	}
+	if (xArray.size() * sumOfXSquared - pow(sumOfX, 2) == 0) {
+		throw runtime_error("Error: cannot calculate slope due to division by zero.");
+	}
 	return (xArray.size() * sumOfXtimesY - (sumOfX * sumOfY)) / (xArray.size() * sumOfXSquared - pow(sumOfX, 2));
 }
 
@@ -148,13 +163,13 @@ double slope(const Dynamic_Array& xArray, const Dynamic_Array& yArray) {
 	@param yArray: Given dynamic array of all Y values
 	@return: The intercept of all values stored in the given dynamic arrays
 */
-double intercept(const Dynamic_Array& xArray, const Dynamic_Array& yArray) {
+double intercept(const Dynamic_Array& xArray, const Dynamic_Array& yArray, double slope) {
 	double sumOfX = 0, sumOfY = 0;
 	for (size_t i = 0; i < xArray.size(); i++) {
 		sumOfX += xArray[i];
 		sumOfY += yArray[i];
 	}
-	return (sumOfY - slope(xArray, yArray) * sumOfX) / xArray.size();
+	return (sumOfY - slope * sumOfX) / xArray.size();
 }
 
 /* Passes and validates all data from the input file to each dynamic array

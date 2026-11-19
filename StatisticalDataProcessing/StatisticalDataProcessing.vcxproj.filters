@@ -23,7 +23,7 @@
     <ClCompile Include="Dynamic_Array.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="VazquezProject2.cpp">
+    <ClCompile Include="VazquezStatisticalDataProcessing.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
