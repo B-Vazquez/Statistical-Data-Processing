@@ -161,6 +161,7 @@ double slope(const Dynamic_Array& xArray, const Dynamic_Array& yArray) {
 /*	Calculates the intercept of all values stored in a given dynamic array
 	@param xArray: Given dynamic array of all X values
 	@param yArray: Given dynamic array of all Y values
+	@param slope: Given slope of all values stored in the given dynamic arrays
 	@return: The intercept of all values stored in the given dynamic arrays
 */
 double intercept(const Dynamic_Array& xArray, const Dynamic_Array& yArray, double slope) {
