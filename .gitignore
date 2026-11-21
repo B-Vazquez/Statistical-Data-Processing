@@ -362,5 +362,7 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 
+# Ignore Build artifacts
 *.exe
 /StatisticalDataProcessing/VazquezStatisticalDataProcessing
+/statistical-data-processing
